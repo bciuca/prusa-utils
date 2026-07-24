@@ -44,7 +44,7 @@ M190 R[first_layer_bed_temperature] ; wait for bed temp
 M107
 
 G29 G ; absorb heat
-
+; Original line; M109 R{((filament_notes[0]=~/.*MBL160.*/) ? 160 : (filament_notes[0]=~/.*HT_MBL10.*/) ? (first_layer_temperature[0] - 10) : (filament_type[0] == "PC" or filament_type[0] == "PA") ? (first_layer_temperature[0] - 25) : (filament_type[0] == "FLEX") ? 210 : 170)} ; wait for MBL temp
 M109 S160 ; CHANGED: wait for 160C before mesh bed leveling to prevent oozing
 
 M302 S155 ; lower cold extrusion limit to 155C

@@ -26,3 +26,11 @@ I read a few forums notes that had the same problem. I thought I might have an i
 7. Perform a Z-axis calibration and homing.
 8. Run the `COREONE_PLUS_full_7x7_bed_level_no_heat.gcode` print file to do a 7x7 bed leveling. This diagnostic print runs with no heat or filament use, make sure the nozzle and plate is clean.
  
+### TPU ooze gunking up build plate during self leveling
+Printing with 85a shore hardness TPU is difficult but frustrating when the plastic drips over the build plate during init and self leveling. Some spots the printer had to try a level over 10 times forming a spiral of TPU does on the plate before getting the right reading.
+
+The issue was too high of a nozzle temp during init, which I think was 210ºC. I changed the start g-code to a hardcoded 160ºC before bed leveling: `M109 S160`. No more oozing. I need to revisit this gcode to figure out all the system variables to make this more robust for other filaments, but 160ºC should be safe enough for all types, you just need to wait a bit longer to get up to first layer temp.
+
+**My fix**
+1. Replace the g-code in the starting g-code setting in Prusa Slicer with the g-code found in `start-gcode-prevent-oozing.gcode`.
+2. Save this setting as a custom print profile for the filament and print settings.
