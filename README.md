@@ -15,7 +15,7 @@ I was getting failed bed leveling for a large print on the very last 49th point.
 
 I read a few forums notes that had the same problem. I thought I might have an issue with one of the Z-axis motor threaded rods, where in some cases the thread size is slightly different on the Z-axis motor that shipped in the upgrade kit than what came from the MK4S. That was't the case for me, thankfully. My issue was with how I installed the trapezoid nuts to the threaded rods. The nuts weren't all the way flush on one or motors which cause a slight but big enough tilt to fail the bed leveling at the edges. Everything was fine for smaller prints I did that leveled 3x3 in the center of the build plate.
 
-**My fix**
+**The fix**
 1. Move the Z-axis all the way to the bottom of the printer
 2. Disable stepper motors
 3. Remove the M3 bolts from the lead screw on all 3 Z-axis.
@@ -31,6 +31,6 @@ Printing with 85a shore hardness TPU is difficult but frustrating when the plast
 
 The issue was too high of a nozzle temp during init, which I think was 210ºC. I changed the start g-code to a hardcoded 160ºC before bed leveling: `M109 S160`. No more oozing. I need to revisit this gcode to figure out all the system variables to make this more robust for other filaments, but 160ºC should be safe enough for all types, you just need to wait a bit longer to get up to first layer temp.
 
-**My fix**
+**The fix**
 1. Replace the g-code in the starting g-code setting in Prusa Slicer with the g-code found in `start-gcode-prevent-oozing.gcode`.
 2. Save this setting as a custom print profile for the filament and print settings.
