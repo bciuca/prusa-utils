@@ -11,8 +11,7 @@ Misc gcode for debugging and quality of life during prints. All files are for th
 ## Notes
 
 ### 7x7 bed leveling error and fix
-**Symptom**
-Failed bed leveling for large prints, usually at the last 49th test point (front-left of bed). 
+**Symptom:** Failed bed leveling for large prints, usually at the last 49th test point (front-left of bed). 
 
 Before attempting to fix anything in the hardware, try rebooting, full Z axis, and homing calibration, then use the bed leveling g-code `COREONE_PLUS_full_7x7_bed_level_no_heat.gcode` to run just the full 49 point bed leveling test.
 
@@ -30,8 +29,7 @@ If that doesn't work, the trapezoid nuts might be slightly off on each of the mo
 8. Run the `COREONE_PLUS_full_7x7_bed_level_no_heat.gcode` print file to do a 7x7 bed leveling. This diagnostic print runs with no heat or filament use, make sure the nozzle and plate is clean.
  
 ### TPU ooze gunking up build plate during self leveling
-**Symptom**
-TPU (the really soft stuff, 85A shore hardness) oozing from nozzle during bed leveling resulting in lots of dots of TPU on the bed. Bed leveling may also fail because the nozzle never gets a clean read.
+**Symptom:** TPU (the really soft stuff, 85A shore hardness) oozing from nozzle during bed leveling resulting in lots of dots of TPU on the bed. Bed leveling may also fail because the nozzle never gets a clean read.
 
 The oozing is caused by too high of a nozzle temp during init, hot enough to melt the TPU and gravity dragging it out. The fix is to lower the nozzle temp during init either manually with Tune on the printer, or modifying the start g-code to set the hotend to 160ºC before bed leveling: `M109 S160`. There may be better solutions in the g-code for this but it worked as a custom print profile for this filament type.
 
