@@ -11,9 +11,12 @@ Misc gcode for debugging and quality of life during prints. All files are for th
 ## Notes
 
 ### 7x7 bed leveling error and fix
-I was getting failed bed leveling for a large print on the very last 49th point. Even after a full Z-axis and homing calibration, I was still getting the error. This was my first large print after upgrading my MK4S to the CoreOne+, which led me to believe I did something wrong during the conversion.
+**Symptom**
+Failed bed leveling for large prints, usually at the last 49th test point (front-left of bed). 
 
-I read a few forums notes that had the same problem. I thought I might have an issue with one of the Z-axis motor threaded rods, where in some cases the thread size is slightly different on the Z-axis motor that shipped in the upgrade kit than what came from the MK4S. That was't the case for me, thankfully. My issue was with how I installed the trapezoid nuts to the threaded rods. The nuts weren't all the way flush on one or motors which cause a slight but big enough tilt to fail the bed leveling at the edges. Everything was fine for smaller prints I did that leveled 3x3 in the center of the build plate.
+Before attempting to fix anything in the hardware, try rebooting, full Z axis, and homing calibration, then use the bed leveling g-code `COREONE_PLUS_full_7x7_bed_level_no_heat.gcode` to run just the full 49 point bed leveling test.
+
+If that doesn't work, the trapezoid nuts might be slightly off on each of the motors. The steps below will align the nuts flush with the bed plate. If the bed is still fails the full self-leveling, one of the threaded rods might have a slightly different thread pitch from the other motors (this was an issue with MK4S conversion kits).
 
 **The fix**
 1. Move the Z-axis all the way to the bottom of the printer
@@ -27,9 +30,10 @@ I read a few forums notes that had the same problem. I thought I might have an i
 8. Run the `COREONE_PLUS_full_7x7_bed_level_no_heat.gcode` print file to do a 7x7 bed leveling. This diagnostic print runs with no heat or filament use, make sure the nozzle and plate is clean.
  
 ### TPU ooze gunking up build plate during self leveling
-Printing with 85a shore hardness TPU is difficult but frustrating when the plastic drips over the build plate during init and self leveling. Some spots the printer had to try a level over 10 times forming a spiral of TPU does on the plate before getting the right reading.
+**Symptom**
+TPU (the really soft stuff, 85A shore hardness) oozing from nozzle during bed leveling resulting in lots of dots of TPU on the bed. Bed leveling may also fail because the nozzle never gets a clean read.
 
-The issue was too high of a nozzle temp during init, which I think was 210ºC. I changed the start g-code to a hardcoded 160ºC before bed leveling: `M109 S160`. No more oozing. I need to revisit this gcode to figure out all the system variables to make this more robust for other filaments, but 160ºC should be safe enough for all types, you just need to wait a bit longer to get up to first layer temp.
+The oozing is caused by too high of a nozzle temp during init, hot enough to melt the TPU and gravity dragging it out. The fix is to lower the nozzle temp during init either manually with Tune on the printer, or modifying the start g-code to set the hotend to 160ºC before bed leveling: `M109 S160`. There may be better solutions in the g-code for this but it worked as a custom print profile for this filament type.
 
 **The fix**
 1. Replace the g-code in the starting g-code setting in Prusa Slicer with the g-code found in `start-gcode-prevent-oozing.gcode`.
