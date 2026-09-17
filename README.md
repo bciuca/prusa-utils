@@ -6,16 +6,18 @@ Misc gcode for debugging and quality of life during prints. All files are for th
 | File | Description |
 | --- | --- |
 | `COREONE_PLUS_full_7x7_bed_level_no_heat.gcode` | 7×7 bed-leveling G-code, no heated nozzle or bed |
-| `COREONE_PLUS_GEN2_nozzle_clean_no_bed_heat.gcode` | Gen 2 factory wiper diagnostic: stock probing and wiping, nozzle heated as needed, bed heater off |
+| `COREONE_PLUS_GEN2_nozzle_clean_no_bed_heat.gcode` | Gen 2 factory wiper diagnostic: stock probing and wiping at a 170°C nozzle target, bed heater off |
 | `start-gcode-prevent-oozing.gcode` | Set nozzle temp to 160ºC during bed leveling to prevent oozing, especially annoying with TPU that constantly drips. |
 
 ## Notes
 
 ### Gen 2 nozzle wiper Y alignment diagnostic
 
-Copy `COREONE_PLUS_GEN2_nozzle_clean_no_bed_heat.gcode` to USB and run it as a print. Use the factory CORE One+ Gen 2 wiper with **Settings → Hardware → Nozzle Wiper** enabled and firmware supporting `G12` (source checked against 6.8.1). This file is not for INDX or aftermarket brushes. Clear the bed and install a clean steel sheet for homing. Watch the approach and stop the print if the nozzle collides with the holder.
+Copy `COREONE_PLUS_GEN2_nozzle_clean_no_bed_heat.gcode` to USB and run it as a print. Use the factory CORE One+ Gen 2 wiper with **Settings → Hardware → Nozzle Wiper** enabled and firmware 6.8.1. This file is not for INDX or aftermarket brushes. Clear the bed and install a clean steel sheet for homing. Remove hardened debris from the nozzle before this low-temperature alignment test. Watch the approach and stop the print if the nozzle collides with the holder.
 
-The file homes, runs one stock `G12` cleaning sequence, and leaves both heaters off. There is no bed heating or bed-temperature wait, mesh leveling, purge line, or requested extrusion. `G12` internally heats the nozzle to the filament's preheat temperature (170°C if no filament type is available), probes the wiper reference, wipes, and waits for its normal 20°C temperature reduction. The file does not wait for the nozzle to reach room temperature afterward.
+The file heats or cools the nozzle to 170°C, homes, runs one stock wiper cleaning sequence through `G29 P9`, and leaves both heaters off. There is no bed heating or bed-temperature wait, mesh leveling, purge line, or requested extrusion. The cleaning routine probes the wiper reference, wipes, and waits for its normal cooldown to 150°C. The file does not wait for room temperature afterward. This is an alignment diagnostic; 170°C may not soften residue from high-temperature filaments sufficiently for effective cleaning.
+
+The original version used `G12`, which overrides the nozzle target with the loaded filament's preheat temperature and could heat to 260–270°C. Replace that copy with this corrected file. In 6.8.1, [G29 P9 selects the print-start wiper routine](https://github.com/prusa3d/Prusa-Firmware-Buddy/blob/v6.8.1/lib/Marlin/Marlin/src/feature/bedlevel/ubl/ubl_G29.cpp), which inherits targets at or above 170°C. Do not lower the target below 170°C: it falls back to filament preheat. No X/Y/W/H arguments are supplied, so a disabled wiper cannot fall back to sheet-tapping cleaning.
 
 In [Prusa firmware 6.8.1](https://github.com/prusa3d/Prusa-Firmware-Buddy/blob/v6.8.1/src/feature/nozzle_cleaner_lite/nozzle_cleaner_lite.cpp), the CORE One wiper reference is X206.5 Y−15; wiping spans X166.5–196.5 and Y−16.5–−13.5. The file delegates these coordinates and contact height to the firmware, so it reproduces the installed firmware's path without applying a Y correction. Firmware support and the hardware toggle are described in [Prusa's release notes](https://github.com/prusa3d/Prusa-Firmware-Buddy/releases/tag/v6.8.1). Hardware operation has not been tested here.
 
